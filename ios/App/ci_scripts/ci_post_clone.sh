@@ -1,35 +1,20 @@
 #!/bin/zsh
 
-# 1. Asegurar el PATH para encontrar Node y Homebrew
+# 1. Rutas
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
 
-echo "🚀 INICIANDO REPARACIÓN DE CAPACITOR"
+echo "🚀 SCRIPT DETECTADO EN IOS/APP/CI_SCRIPTS"
 
-# 2. Ir a la raíz del proyecto
+# 2. Subir 3 niveles para llegar a la raíz donde está package.json
 cd ../../..
-echo "📍 Raíz: $(pwd)"
+echo "📍 Raíz del proyecto: $(pwd)"
 
-# 3. Limpieza profunda (Eliminar lo que pueda estar corrupto)
-echo "🧹 Limpiando carpetas viejas..."
-rm -rf node_modules package-lock.json ios/App/Pods ios/App/Podfile.lock
-
-# 4. Instalación de Node si falta (Paso de seguridad)
-if ! command -v npm &> /dev/null; then
-    echo "⚠️ Instalando Node vía Brew..."
-    brew install node
-fi
-
-# 5. Reinstalación total
-echo "📦 Instalando dependencias de Node..."
+# 3. Instalación
 npm install
-
-echo "🔄 Sincronizando Capacitor (Generando archivos de iOS)..."
 npx cap sync ios
 
-# 6. Forzar actualización de CocoaPods
-echo "⾒ Instalando Pods..."
+# 4. Volver a bajar para los Pods
 cd ios/App
 pod install --repo-update
 
-echo "✅ PROCESO FINALIZADO"# Force Build Mon Apr 27 18:48:06 EAT 2026
-# Build forzado el Mon Apr 27 18:59:14 EAT 2026
+echo "✅ FIN DEL SCRIPT"
