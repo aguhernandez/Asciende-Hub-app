@@ -31,4 +31,5 @@ echo "⾒ Instalando Pods..."
 cd ios/App
 pod install --repo-update
 
-echo "✅ PROCESO FINALIZADO"
+echo "✅ PROCESO FINALIZADO"# Force Build Mon Apr 27 18:48:06 EAT 2026
+# Build forzado el Mon Apr 27 18:59:14 EAT 2026
