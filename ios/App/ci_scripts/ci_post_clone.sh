@@ -1,28 +1,22 @@
 #!/bin/zsh
-
-# Salir si algo falla
 set -e
 
-echo "📍 Buscando raíz del proyecto..."
+# Subir a la raíz
 cd ../../..
 
-# Forzar el PATH para encontrar Node/npm en Xcode Cloud
+# Configurar el PATH
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
-echo "📍 Directorio actual: $(pwd)"
+echo "🚀 Iniciando instalación de dependencias..."
 
-# 1. Instalar dependencias
-echo "📦 Ejecutando npm install..."
+# 1. Instalar dependencias de Node
 npm install
 
 # 2. Sincronizar Capacitor
-echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
 # 3. Instalar Pods
-echo "⾒ Instalando CocoaPods..."
 cd ios/App
 pod install
 
-echo "✅ Script finalizado con éxito"
-echo "Re-disparando Build"
+echo "✅ Script terminado con éxito"
