@@ -1,33 +1,34 @@
 #!/bin/zsh
 
-# 1. Configurar rutas de comando
+# 1. Asegurar el PATH para encontrar Node y Homebrew
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
 
-echo "🚀 Iniciando configuración de entorno..."
+echo "🚀 INICIANDO REPARACIÓN DE CAPACITOR"
 
-# 2. Verificar si Node existe, si no, instalarlo vía Homebrew
+# 2. Ir a la raíz del proyecto
+cd ../../..
+echo "📍 Raíz: $(pwd)"
+
+# 3. Limpieza profunda (Eliminar lo que pueda estar corrupto)
+echo "🧹 Limpiando carpetas viejas..."
+rm -rf node_modules package-lock.json ios/App/Pods ios/App/Podfile.lock
+
+# 4. Instalación de Node si falta (Paso de seguridad)
 if ! command -v npm &> /dev/null; then
-    echo "⚠️ NPM no encontrado. Intentando instalar Node..."
+    echo "⚠️ Instalando Node vía Brew..."
     brew install node
-else
-    echo "✅ Node/NPM detectado"
 fi
 
-# 3. Ir a la raíz del proyecto
-cd ../../..
-echo "📍 Directorio raíz: $(pwd)"
-
-# 4. Instalar dependencias de Node
-echo "📦 Instalando dependencias del proyecto..."
+# 5. Reinstalación total
+echo "📦 Instalando dependencias de Node..."
 npm install
 
-# 5. Sincronizar Capacitor (Crea la carpeta de Pods y plugins)
-echo "🔄 Sincronizando Capacitor..."
+echo "🔄 Sincronizando Capacitor (Generando archivos de iOS)..."
 npx cap sync ios
 
-# 6. Instalar Pods (Lo que Xcode necesita para 'import Capacitor')
-echo "⾒ Instalando CocoaPods..."
+# 6. Forzar actualización de CocoaPods
+echo "⾒ Instalando Pods..."
 cd ios/App
-pod install
+pod install --repo-update
 
-echo "✅ Script finalizado con éxito"
+echo "✅ PROCESO FINALIZADO"
