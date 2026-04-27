@@ -1,18 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Iniciando configuración en la raíz..."
-
-# 1. Crear carpetas que Xcode busca desesperadamente
+# Crear carpeta public por si Git no la subió bien
 mkdir -p public
 touch public/index.html
-mkdir -p node_modules/@capacitor/camera
-mkdir -p node_modules/@capacitor/geolocation
-mkdir -p node_modules/@capacitor/push-notifications
 
-# 2. Instalar todo
 npm install
 npx cap sync ios
 
-echo "✅ Entorno preparado."
+# Forzar copia a la carpeta interna de la App por si Xcode se pierde
+cp capacitor.config.json ios/App/App/ 2>/dev/null || true
+cp config.xml ios/App/App/ 2>/dev/null || true
+cp -R public/ ios/App/App/ 2>/dev/null || true
 
+echo "✅ Listo"
