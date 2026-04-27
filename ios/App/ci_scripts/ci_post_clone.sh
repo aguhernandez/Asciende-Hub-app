@@ -1,27 +1,27 @@
-#!/bin/bash
+#!/bin/zsh
+
+# Salir si algo falla
 set -e
 
-# 1. Encontrar la raíz del proyecto dinámicamente
-# Buscamos hacia atrás hasta encontrar el package.json
-until [ -f package.json ] || [ "$PWD" = "/" ]; do
-    cd ..
-done
+echo "📍 Buscando raíz del proyecto..."
+cd ../../..
 
-echo "📍 Raíz detectada en: $(pwd)"
+# Forzar el PATH para encontrar Node/npm en Xcode Cloud
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
-# 2. Instalar dependencias usando la ruta completa de npm
-# Xcode Cloud a veces requiere que usemos comandos de entorno
-export PATH=$PATH:/usr/local/bin
+echo "📍 Directorio actual: $(pwd)"
 
-echo "📦 Instalando dependencias de Node..."
+# 1. Instalar dependencias
+echo "📦 Ejecutando npm install..."
 npm install
 
+# 2. Sincronizar Capacitor
 echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 3. Ir a la carpeta de iOS e instalar Pods
+# 3. Instalar Pods
+echo "⾒ Instalando CocoaPods..."
 cd ios/App
-echo "CP Instalando CocoaPods..."
 pod install
 
-echo "✅ Todo listo para compilar"
+echo "✅ Script finalizado con éxito"
