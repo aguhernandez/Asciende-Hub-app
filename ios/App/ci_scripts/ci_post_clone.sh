@@ -1,31 +1,33 @@
 #!/bin/zsh
 
-# 1. Cargar el PATH de las herramientas comunes de macOS y Homebrew
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# 1. Configurar rutas de comando
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
 
-# 2. Intentar cargar Node si está instalado vía Homebrew (común en Xcode Cloud)
-if [ -d "/usr/local/opt/node/bin" ]; then
-    export PATH="/usr/local/opt/node/bin:$PATH"
+echo "🚀 Iniciando configuración de entorno..."
+
+# 2. Verificar si Node existe, si no, instalarlo vía Homebrew
+if ! command -v npm &> /dev/null; then
+    echo "⚠️ NPM no encontrado. Intentando instalar Node..."
+    brew install node
+else
+    echo "✅ Node/NPM detectado"
 fi
 
-echo "🚀 SCRIPT INICIADO"
-echo "📍 Ubicación: $(pwd)"
-
-# 3. Ir a la raíz (donde está package.json)
+# 3. Ir a la raíz del proyecto
 cd ../../..
-echo "📍 Raíz: $(pwd)"
+echo "📍 Directorio raíz: $(pwd)"
 
-# 4. Instalar dependencias (Usamos la ruta completa para estar seguros)
-echo "📦 Instalando dependencias..."
+# 4. Instalar dependencias de Node
+echo "📦 Instalando dependencias del proyecto..."
 npm install
 
-# 5. Sincronizar Capacitor
-echo "🔄 Sincronizando..."
+# 5. Sincronizar Capacitor (Crea la carpeta de Pods y plugins)
+echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 6. Instalar Pods (Entrando a la carpeta correcta)
-echo "⾒ Instalando Pods..."
+# 6. Instalar Pods (Lo que Xcode necesita para 'import Capacitor')
+echo "⾒ Instalando CocoaPods..."
 cd ios/App
 pod install
 
-echo "✅ PROCESO COMPLETADO"
+echo "✅ Script finalizado con éxito"
