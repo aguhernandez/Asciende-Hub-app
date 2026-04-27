@@ -25,3 +25,4 @@ cd ios/App
 pod install
 
 echo "✅ Script finalizado con éxito"
+echo "Re-disparando Build"
