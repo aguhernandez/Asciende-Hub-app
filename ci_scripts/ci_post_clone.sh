@@ -1,26 +1,30 @@
 #!/bin/bash
 set -e
 
-# 1. Asegurarnos de estar en la raíz del repositorio
-# (Xcode Cloud a veces inicia en subcarpetas)
-cd "$(dirname "$0")/.." 2>/dev/null || cd ..
+# 1. Navegar a la raíz del proyecto (un nivel arriba de ci_scripts)
+cd "$(dirname "$0")/.."
 
-echo "📍 Estamos en: $(pwd)"
+echo "📍 Directorio actual: $(pwd)"
 
-# 2. Instalar dependencias de Node
+# 2. Verificar que estamos en el lugar correcto (donde está package.json)
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: No se encontró package.json en $(pwd)"
+    exit 1
+fi
+
+# 3. Instalar dependencias de Node
 echo "Installing npm dependencies..."
 npm install
 
-# 3. Crear una carpeta 'public' vacía si no existe
-# (Esto evita el error de "public couldn't be opened")
+# 4. Crear carpeta 'public' si no existe para evitar el error de Capacitor
 if [ ! -d "public" ]; then
-  mkdir public
-  echo "index.html" > public/index.html
+    mkdir public
+    touch public/index.html
+    echo "Created dummy public folder"
 fi
 
-# 4. Sincronizar Capacitor
+# 5. Sincronizar Capacitor
 echo "Syncing Capacitor..."
 npx cap sync ios
 
-echo "✅ Script finalizado con éxito"
-exit 0
+echo "✅ Proceso completado con éxito"
