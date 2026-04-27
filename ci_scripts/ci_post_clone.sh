@@ -1,30 +1,19 @@
 #!/bin/bash
 set -e
 
-# 1. Navegar a la raíz del proyecto (un nivel arriba de ci_scripts)
-cd "$(dirname "$0")/.."
+# IMPORTANTE: Moverse a la raíz del proyecto (Asciende_HUB_V1.0)
+cd ..
 
-echo "📍 Directorio actual: $(pwd)"
+echo "📍 Estamos en: $(pwd)"
 
-# 2. Verificar que estamos en el lugar correcto (donde está package.json)
-if [ ! -f "package.json" ]; then
-    echo "❌ Error: No se encontró package.json en $(pwd)"
-    exit 1
-fi
+# Crear carpeta 'public' vacía para que Capacitor no se queje
+mkdir -p public
+touch public/index.html
 
-# 3. Instalar dependencias de Node
-echo "Installing npm dependencies..."
+# Instalar dependencias
 npm install
 
-# 4. Crear carpeta 'public' si no existe para evitar el error de Capacitor
-if [ ! -d "public" ]; then
-    mkdir public
-    touch public/index.html
-    echo "Created dummy public folder"
-fi
-
-# 5. Sincronizar Capacitor
-echo "Syncing Capacitor..."
+# Sincronizar
 npx cap sync ios
 
-echo "✅ Proceso completado con éxito"
+echo "✅ Listo"
