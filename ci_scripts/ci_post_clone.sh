@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# 1. Instalar dependencias de Node (esto crea node_modules)
+# 1. Instalar dependencias de Node
 npm install
 
-# 2. Instalar CocoaPods y sincronizar Capacitor
-brew install cocoapods
+# 2. Sincronizar Capacitor (esto reconstruye lo que borramos)
 npx cap sync ios
 
-echo "Capacitor sync completed successfully!"
+# 3. Dar permisos si es necesario
+exit 0
