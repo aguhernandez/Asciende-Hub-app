@@ -2,11 +2,11 @@
 
 set -e
 
-echo "🚀 CI_POST_CLONE: Detectando arquitectura y descargando Node..."
+echo "🚀 CI_POST_CLONE: Descargando Node v22 (LTS) para Capacitor..."
 
 # 1. Detectar arquitectura
 ARCH=$(uname -m)
-NODE_VER="v20.11.1"
+NODE_VER="v22.13.1" # Actualizado a la última LTS v22
 
 if [ "$ARCH" = "arm64" ]; then
     NODE_PLATFORM="darwin-arm64"
@@ -14,7 +14,7 @@ else
     NODE_PLATFORM="darwin-x64"
 fi
 
-echo "Architecture detected: $ARCH. Downloading $NODE_PLATFORM..."
+echo "Architecture: $ARCH. Platform: $NODE_PLATFORM."
 
 # 2. Descargar y extraer
 curl -OL "https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-$NODE_PLATFORM.tar.gz"
@@ -41,4 +41,4 @@ echo "📱 Instalando Pods..."
 cd ios/App
 pod install
 
-echo "--- ✅ SCRIPT COMPLETADO CON ÉXITO ---"
+echo "--- ✅ PROCESO COMPLETADO ---"
