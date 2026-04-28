@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/zsh
 
 set -e
 
@@ -13,28 +13,28 @@ curl -OL "https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-$NODE_PLATFORM.tar.gz
 tar -xzf "node-$NODE_VER-$NODE_PLATFORM.tar.gz"
 export PATH="$(pwd)/node-$NODE_VER-$NODE_PLATFORM/bin:$PATH"
 
-# 2. Ir a la raíz
+# 2. Ir a la raíz del proyecto
 cd "$(dirname "$0")/../../.."
 
-# 3. Instalación y Build Web
-echo "📦 Instalando dependencias..."
+# 3. Instalación de dependencias y Build Web
+echo "📦 Instalando dependencias de Node..."
 npm install --force
 
-echo "🏗️ Ejecutando Build Web..."
+echo "🏗️ Construyendo proyecto web..."
 npm run build
 
 # 4. Sincronizar Capacitor
 echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 5. Instalación de Pods (Solo si el archivo existe)
-echo "📱 Verificando CocoaPods..."
+# 5. Instalación de Pods (Aquí es donde ocurre la magia)
+echo "📱 Instalando CocoaPods..."
 cd ios/App
 if [ -f "Podfile" ]; then
-    echo "📄 Podfile encontrado. Ejecutando pod install..."
     pod install
 else
-    echo "ℹ️ No se encontró Podfile. Capacitor está usando Swift Package Manager. Saltando..."
+    echo "⚠️ Error: No se encontró el Podfile"
+    exit 1
 fi
 
 echo "--- ✅ PROCESO FINALIZADO CON ÉXITO ---"

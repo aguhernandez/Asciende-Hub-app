@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'pro.asciende.app',
   appName: 'Asciende',
   webDir: 'dist',
+  useSpm: false,
   bundledWebRuntime: false,
   server: {
     androidScheme: 'https',
