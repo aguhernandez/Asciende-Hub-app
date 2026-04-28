@@ -2,43 +2,38 @@
 
 set -e
 
-echo "🚀 CI_POST_CLONE: Descargando Node v22 (LTS) para Capacitor..."
+echo "🚀 CI_POST_CLONE: Preparando entorno V22"
 
-# 1. Detectar arquitectura
+# 1. Detectar arquitectura y bajar Node
 ARCH=$(uname -m)
-NODE_VER="v22.13.1" # Actualizado a la última LTS v22
+NODE_VER="v22.13.1"
+NODE_PLATFORM=$([ "$ARCH" = "arm64" ] && echo "darwin-arm64" || echo "darwin-x64")
 
-if [ "$ARCH" = "arm64" ]; then
-    NODE_PLATFORM="darwin-arm64"
-else
-    NODE_PLATFORM="darwin-x64"
-fi
-
-echo "Architecture: $ARCH. Platform: $NODE_PLATFORM."
-
-# 2. Descargar y extraer
 curl -OL "https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-$NODE_PLATFORM.tar.gz"
 tar -xzf "node-$NODE_VER-$NODE_PLATFORM.tar.gz"
-
-# 3. Configurar PATH
 export PATH="$(pwd)/node-$NODE_VER-$NODE_PLATFORM/bin:$PATH"
 
-echo "✅ Node activado: $(node -v)"
-echo "✅ NPM activado: $(npm -v)"
+echo "✅ Node: $(node -v)"
 
-# 4. Ir a la raíz del proyecto
+# 2. Ir a la raíz
 cd "$(dirname "$0")/../../.."
 
-# 5. Instalación de Capacitor
+# 3. Instalación de dependencias
 echo "📦 Instalando dependencias de Node..."
 npm install --force
 
+# 4. CONSTRUIR EL PROYECTO WEB (Paso vital)
+# Esto crea la carpeta /dist que Capacitor está pidiendo
+echo "🏗️ Construyendo proyecto web..."
+npm run build
+
+# 5. Sincronizar Capacitor
 echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 6. Pods
+# 6. Instalar Pods nativos
 echo "📱 Instalando Pods..."
 cd ios/App
 pod install
 
-echo "--- ✅ PROCESO COMPLETADO ---"
+echo "--- ✅ TODO LISTO PARA COMPILAR ---"
