@@ -1,30 +1,23 @@
 #!/bin/zsh
 
+# 1. Configurar el entorno
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
+echo "🚀 INICIANDO MODO RECOVERY (COCOAPODS)"
 
-# 1. Ir a la raíz
+# 2. Ir a la raíz del proyecto
 cd ../../..
 
-# 2. Crear archivos Package.swift mínimos pero VÁLIDOS
-# Esto evita el error de "is empty"
-PACKAGE_CONTENT='// swift-tools-version: 5.9
-import PackageDescription
-let package = Package(name: "Temp", products: [], targets: [])'
-
-mkdir -p node_modules/@capacitor/camera
-echo "$PACKAGE_CONTENT" > node_modules/@capacitor/camera/Package.swift
-
-mkdir -p node_modules/@capacitor/geolocation
-echo "$PACKAGE_CONTENT" > node_modules/@capacitor/geolocation/Package.swift
-
-mkdir -p node_modules/@capacitor/push-notifications
-echo "$PACKAGE_CONTENT" > node_modules/@capacitor/push-notifications/Package.swift
-
-# 3. Instalación de emergencia de Node
-echo "📦 Ejecutando npm install..."
+# 3. Instalación de Node (Esto crea la carpeta node_modules)
+echo "📦 Instalando dependencias de Node..."
 npm install --force
 
-# 4. Sincronizar y forzar la resolución nosotros mismos
+# 4. Sincronizar Capacitor (Esto inyecta los plugins en el Podfile)
+echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-echo "✅ SCRIPT FINALIZADO"
+# 5. Instalar los Pods nativos
+echo "📱 Instalando Pods..."
+cd ios/App
+pod install
+
+echo "✅ PROCESO COMPLETADO CON ÉXITO"
