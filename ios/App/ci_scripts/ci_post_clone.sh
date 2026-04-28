@@ -1,27 +1,30 @@
 #!/bin/zsh
 
-# 1. Path y Echo inicial
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
-echo "🚀 INICIO DE SCRIPT EN: $(pwd)"
+echo "🚀 INICIO DE REPARACIÓN DE DEPENDENCIAS"
 
-# 2. Navegar a la raíz con seguridad
-# Intentamos subir 3 niveles (ios/App/ci_scripts -> ios/App -> ios -> raiz)
+# 1. Ir a la raíz
 cd ../../..
 
-# 3. VALIDACIÓN CRUCIAL: ¿Estamos en la raíz?
-if [ ! -f "package.json" ]; then
-    echo "❌ ERROR: No se encontró package.json en $(pwd). El script falló al navegar."
-    exit 1
-fi
+# 2. Crear carpetas base para que SPM no de error de "not found"
+mkdir -p node_modules/@capacitor/camera
+mkdir -p node_modules/@capacitor/geolocation
+mkdir -p node_modules/@capacitor/push-notifications
 
-echo "✅ Estamos en la raíz. Iniciando instalaciones..."
+# 3. Instalación de Node
+echo "📦 Instalando Node Modules..."
+npm install --force
 
-# 4. Instalaciones (Añadimos --ci para que sea más rápido y limpio)
-npm install
+# 4. Sincronizar Capacitor y REGENERAR archivos de ayuda
+echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 5. Pods
+# 5. Forzar a Xcode a reconocer los paquetes recién instalados
+echo "🛠 Forzando resolución de paquetes..."
+xcodebuild -resolvePackageDependencies -project ios/App/App.xcodeproj -scheme App
+
+# 6. Pods
 cd ios/App
 pod install
 
-echo "✅ SCRIPT COMPLETADO CON ÉXITO"
+echo "✅ PROCESO COMPLETADO"
