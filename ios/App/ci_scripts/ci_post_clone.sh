@@ -1,29 +1,30 @@
 #!/bin/zsh
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
-echo "🚀 CI_POST_CLONE: Forzando presencia de archivos"
 
 # 1. Ir a la raíz
 cd ../../..
 
-# 2. Crear las rutas de los manifiestos que Xcode Cloud valida agresivamente
-# Esto engaña al validador de Xcode para que crea que el paquete existe
+# 2. Crear archivos Package.swift mínimos pero VÁLIDOS
+# Esto evita el error de "is empty"
+PACKAGE_CONTENT='// swift-tools-version: 5.9
+import PackageDescription
+let package = Package(name: "Temp", products: [], targets: [])'
+
 mkdir -p node_modules/@capacitor/camera
-touch node_modules/@capacitor/camera/Package.swift
+echo "$PACKAGE_CONTENT" > node_modules/@capacitor/camera/Package.swift
 
 mkdir -p node_modules/@capacitor/geolocation
-touch node_modules/@capacitor/geolocation/Package.swift
+echo "$PACKAGE_CONTENT" > node_modules/@capacitor/geolocation/Package.swift
 
 mkdir -p node_modules/@capacitor/push-notifications
-touch node_modules/@capacitor/push-notifications/Package.swift
+echo "$PACKAGE_CONTENT" > node_modules/@capacitor/push-notifications/Package.swift
 
-# 3. Ahora sí, instalación real (esto sobreescribirá los archivos vacíos con los reales)
-echo "📦 Instalando dependencias reales..."
+# 3. Instalación de emergencia de Node
+echo "📦 Ejecutando npm install..."
 npm install --force
+
+# 4. Sincronizar y forzar la resolución nosotros mismos
 npx cap sync ios
 
-# 4. Instalar Pods
-cd ios/App
-pod install
-
-echo "✅ PROCESO COMPLETADO"
+echo "✅ SCRIPT FINALIZADO"
