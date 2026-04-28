@@ -6,3 +6,4 @@ npm install
 npx cap sync ios
 cd ios/App && pod install
 echo "✅ SCRIPT FINALIZADO"
+# Nuevo inicio
