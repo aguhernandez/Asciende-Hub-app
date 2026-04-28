@@ -1,41 +1,37 @@
 #!/bin/zsh
 
-# 1. Salir si hay error
 set -e
 
-echo "🚀 CI_POST_CLONE: Localizando Node nativo..."
+echo "🚀 CI_POST_CLONE: Instalación manual de Node Portátil"
 
-# 2. Forzar las rutas exactas de Xcode Cloud donde vive Node
-# Apple suele tenerlo en /usr/local/bin o lo gestiona vía nvm
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
+# 1. Descargar Node binario (versión LTS 20) directamente
+# Usamos el binario de macOS ARM64 porque Xcode Cloud corre en Apple Silicon
+NODE_VER="v20.11.1"
+NODE_PLATFORM="darwin-arm64"
+curl -OL "https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-$NODE_PLATFORM.tar.gz"
 
-# 3. TRUCO FINAL: Si npm no se ve, intentamos cargarlo desde el directorio de nvm de Apple
-if ! command -v npm &> /dev/null; then
-    echo "🔍 Node no está en el PATH básico, cargando NVM de Apple..."
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    
-    # Si después de intentar cargar NVM sigue sin funcionar, usamos la ruta directa
-    nvm use --lts || echo "⚠️ NVM no encontró versión, siguiendo..."
-fi
+# 2. Descomprimirlo
+tar -xzf "node-$NODE_VER-$NODE_PLATFORM.tar.gz"
 
-# 4. Verificar si ahora sí lo vemos
-echo "✅ Node: $(node -v 2>/dev/null || echo 'No encontrado')"
-echo "✅ NPM: $(npm -v 2>/dev/null || echo 'No encontrado')"
+# 3. Configurar el PATH para usar este Node
+export PATH="$(pwd)/node-$NODE_VER-$NODE_PLATFORM/bin:$PATH"
 
-# 5. Ir a la raíz (3 niveles arriba)
-cd "$(dirname "$0")/../../.."
+echo "✅ Node activado: $(node -v)"
+echo "✅ NPM activado: $(npm -v)"
 
-# 6. INSTALACIÓN
-echo "📦 Instalando Node Modules..."
+# 4. Ir a la raíz del proyecto
+cd ../../..
+
+# 5. Instalación normal de Capacitor
+echo "📦 Instalando dependencias de Node..."
 npm install --force
 
 echo "🔄 Sincronizando Capacitor..."
 npx cap sync ios
 
-# 7. PODS
+# 6. Pods
 echo "📱 Instalando Pods..."
 cd ios/App
 pod install
 
-echo "--- ✅ SCRIPT TERMINADO ---"
+echo "--- ✅ SCRIPT COMPLETADO CON ÉXITO ---"
