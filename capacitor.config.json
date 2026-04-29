@@ -1,6 +1,6 @@
 {
 	"appId": "pro.asciende.app",
-	"appName": "Asciende",
+	"appName": "Asciende Hub",
 	"webDir": "dist",
 	"bundledWebRuntime": false,
 	"server": {
