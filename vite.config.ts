@@ -51,6 +51,7 @@ if (!isPackageInstalled('@capacitor/geolocation')) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), copyPublicManually()],
+  base: './',
   publicDir: false,
   resolve: {
     alias: capacitorAliases,
