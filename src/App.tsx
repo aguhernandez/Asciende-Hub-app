@@ -1,3 +1,15 @@
+console.log('APP LOADED');
+import { PushNotifications } from '@capacitor/push-notifications';
+async function initPush() {
+  let permStatus = await PushNotifications.requestPermissions();
+
+  if (permStatus.receive !== 'granted') {
+    console.log('Push permission denied');
+    return;
+  }
+
+  await PushNotifications.register();
+}
 import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import AuthPage from './pages/AuthPage';
@@ -110,6 +122,8 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
+      console.log('INIT PUSH RUNNING');
+      initPush();
       // Auth is ready — splash can become interactive. Don't auto-close splash.
     }
   }, [loading]);
